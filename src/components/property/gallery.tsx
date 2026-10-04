@@ -1,103 +1,280 @@
 'use client';
-import { ChevronLeft, ChevronRight, Images, X } from 'lucide-react';
+
+import { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Images, X, Maximize2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
 import { useI18n } from '@/i18n/client';
 import type { ImageRef } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 export function Gallery({ images, title }: { images: ImageRef[]; title: string }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [open, setOpen] = useState<number | null>(null);
   const [dir, setDir] = useState(1);
-  const shown = [...images];
-  while (shown.length < 3 && images.length) shown.push(images[0]);
+
+  const list = images.length > 0 ? images : [{ id: 'fallback', url: '/homes/villa.webp', alt: title }];
 
   const go = useCallback(
     (d: number) => {
       setDir(d);
-      setOpen((i) => (i === null ? i : (i + d + images.length) % images.length));
+      setOpen((curr) => (curr === null ? curr : (curr + d + list.length) % list.length));
     },
-    [images.length],
+    [list.length]
   );
 
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(null);
-      if (e.key === 'ArrowRight') go(1);
-      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(lang === 'ar' ? -1 : 1);
+      if (e.key === 'ArrowLeft') go(lang === 'ar' ? 1 : -1);
     };
-    document.addEventListener('keydown', onKey);
+    window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => {
-      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [open, go]);
+  }, [open, go, lang]);
 
   return (
     <>
-      <div className="grid h-[260px] gap-3 overflow-hidden rounded-[26px] sm:h-[472px] sm:grid-cols-[2fr_1fr] sm:grid-rows-2">
-        {shown.slice(0, 3).map((img, i) => (
+      {/* ───────── Editorial Asymmetric Gallery Grid ───────── */}
+      <div className="relative isolate overflow-hidden rounded-[24px] sm:rounded-[30px] border border-border bg-sand-2 shadow-xs">
+        <div className="grid h-[280px] sm:h-[440px] lg:h-[500px] gap-2 sm:gap-2.5 sm:grid-cols-4 sm:grid-rows-2">
+          {/* Main Hero Photo (Spans 2 cols & 2 rows on desktop) */}
           <motion.button
-            key={`${img.id}-${i}`}
             type="button"
-            onClick={() => setOpen(i % images.length)}
-            initial={{ opacity: 0, scale: 1.04 }}
+            onClick={() => setOpen(0)}
+            initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, delay: i * 0.1 }}
-            className={`group relative overflow-hidden bg-sand ${i === 0 ? 'sm:row-span-2' : 'hidden sm:block'}`}
-            aria-label={`${title}, ${i + 1}`}
+            transition={{ duration: 0.6 }}
+            className="group relative h-full w-full overflow-hidden bg-sand sm:col-span-2 sm:row-span-2 text-start focus:outline-none"
+            aria-label={`${title} - Photo 1`}
           >
-            <Image src={img.url} alt={img.alt ?? title} fill priority={i === 0} sizes={i === 0 ? '(max-width:640px) 100vw, 66vw' : '33vw'} className="object-cover transition-transform duration-[900ms] ease-out-soft group-hover:scale-105" />
-            {i === 0 && (
-              <span className="absolute bottom-3.5 end-3.5 flex items-center gap-1.5 rounded-full bg-white/90 px-3.5 py-1.5 text-[13px] font-semibold text-[#16303a]">
-                <Images className="size-4" />
-                <span className="tabular">{images.length}</span> {t.detail.photos}
-              </span>
-            )}
+            <Image
+              src={list[0]?.url ?? '/homes/villa.webp'}
+              alt={list[0]?.alt ?? title}
+              fill
+              priority
+              loading="eager"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 50vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </motion.button>
-        ))}
+
+          {/* Secondary Photo 1 */}
+          <motion.button
+            type="button"
+            onClick={() => setOpen(1 % list.length)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="group relative hidden sm:block h-full w-full overflow-hidden bg-sand text-start focus:outline-none"
+            aria-label={`${title} - Photo 2`}
+          >
+            <Image
+              src={list[1]?.url ?? list[0]?.url ?? '/homes/villa.webp'}
+              alt={list[1]?.alt ?? title}
+              fill
+              sizes="(max-width: 1024px) 30vw, 25vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.button>
+
+          {/* Secondary Photo 2 */}
+          <motion.button
+            type="button"
+            onClick={() => setOpen(2 % list.length)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="group relative hidden sm:block h-full w-full overflow-hidden bg-sand text-start focus:outline-none"
+            aria-label={`${title} - Photo 3`}
+          >
+            <Image
+              src={list[2]?.url ?? list[0]?.url ?? '/homes/villa.webp'}
+              alt={list[2]?.alt ?? title}
+              fill
+              sizes="(max-width: 1024px) 30vw, 25vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.button>
+
+          {/* Secondary Photo 3 */}
+          <motion.button
+            type="button"
+            onClick={() => setOpen(3 % list.length)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="group relative hidden sm:block h-full w-full overflow-hidden bg-sand text-start focus:outline-none"
+            aria-label={`${title} - Photo 4`}
+          >
+            <Image
+              src={list[3]?.url ?? list[1]?.url ?? '/homes/villa.webp'}
+              alt={list[3]?.alt ?? title}
+              fill
+              sizes="(max-width: 1024px) 30vw, 25vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.button>
+
+          {/* Secondary Photo 4 */}
+          <motion.button
+            type="button"
+            onClick={() => setOpen(4 % list.length)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="group relative hidden sm:block h-full w-full overflow-hidden bg-sand text-start focus:outline-none"
+            aria-label={`${title} - Photo 5`}
+          >
+            <Image
+              src={list[4]?.url ?? list[2]?.url ?? '/homes/villa.webp'}
+              alt={list[4]?.alt ?? title}
+              fill
+              sizes="(max-width: 1024px) 30vw, 25vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.button>
+        </div>
+
+        {/* Floating View All Photos Button */}
+        <button
+          type="button"
+          onClick={() => setOpen(0)}
+          className="absolute bottom-4 end-4 z-10 flex items-center gap-2 rounded-full border border-border/80 bg-surface/90 backdrop-blur-md px-4 py-2 text-xs font-bold text-text shadow-md hover:bg-surface hover:border-primaryColor transition-all duration-200"
+        >
+          <Images className="size-4 text-primaryColor" />
+          <span>
+            {lang === 'ar'
+              ? `عرض كل الصور (${list.length})`
+              : `View all ${list.length} photos`}
+          </span>
+        </button>
       </div>
 
+      {/* ───────── Fullscreen Lightbox Modal ───────── */}
       <AnimatePresence>
         {open !== null && (
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="fixed inset-0 z-[70] grid place-items-center bg-[rgba(6,18,22,.92)] px-4 py-10"
+            className="fixed inset-0 z-[100] flex flex-col justify-between bg-black/95 backdrop-blur-md p-4 sm:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
             onClick={(e) => e.target === e.currentTarget && setOpen(null)}
           >
-            <AnimatePresence mode="popLayout" custom={dir}>
-              <motion.div
-                key={open}
-                custom={dir}
-                initial={{ opacity: 0, x: dir * 60, scale: 0.96 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: dir * -60 }}
-                transition={{ duration: 0.45 }}
-                className="relative aspect-[16/10] w-full max-w-[1100px]"
-              >
-                <Image src={images[open].url} alt={images[open].alt ?? title} fill sizes="100vw" className="rounded-2xl object-contain" />
-              </motion.div>
-            </AnimatePresence>
-            <button type="button" onClick={() => setOpen(null)} aria-label={t.detail.close} className="absolute end-5 top-5 grid size-12 place-items-center rounded-full bg-white/15 text-white" autoFocus>
-              <X />
-            </button>
-            <button type="button" onClick={() => go(-1)} aria-label={t.detail.prev} className="absolute start-5 top-1/2 grid size-12 place-items-center rounded-full bg-white/15 text-white">
-              <ChevronLeft className="rtl-flip" />
-            </button>
-            <button type="button" onClick={() => go(1)} aria-label={t.detail.next} className="absolute end-5 top-1/2 grid size-12 place-items-center rounded-full bg-white/15 text-white">
-              <ChevronRight className="rtl-flip" />
-            </button>
-            <div className="tabular absolute bottom-6 text-[13px] text-[#cfe0e1]">
-              {open + 1} / {images.length}
+            {/* Lightbox Header Bar */}
+            <div className="flex items-center justify-between text-white pb-3 border-b border-white/10 z-10">
+              <div className="flex items-center gap-3">
+                <span className="tabular font-display text-sm font-bold bg-white/15 px-3 py-1 rounded-full">
+                  {open + 1} / {list.length}
+                </span>
+                <span className="truncate max-w-[280px] sm:max-w-[480px] text-sm text-white/80 font-medium">
+                  {title}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setOpen(null)}
+                  aria-label={t.detail?.close ?? 'Close'}
+                  className="grid size-10 place-items-center rounded-full bg-white/10 text-white/90 hover:bg-white/20 hover:text-white transition-colors"
+                  autoFocus
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
             </div>
+
+            {/* Main Stage Image Display */}
+            <div className="relative flex-1 flex items-center justify-center py-4 overflow-hidden">
+              <AnimatePresence mode="popLayout" custom={dir}>
+                <motion.div
+                  key={open}
+                  custom={dir}
+                  initial={{ opacity: 0, x: dir * 50, scale: 0.98 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: dir * -50 }}
+                  transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+                  className="relative h-full max-h-[75vh] w-full max-w-[1200px]"
+                >
+                  <Image
+                    src={list[open]?.url ?? '/homes/villa.webp'}
+                    alt={list[open]?.alt ?? title}
+                    fill
+                    sizes="100vw"
+                    className="object-contain rounded-2xl"
+                    priority
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Prev / Next Chevrons */}
+              {list.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => go(-1)}
+                    aria-label={t.detail?.prev ?? 'Previous photo'}
+                    className="absolute start-2 sm:start-6 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 transition-all"
+                  >
+                    <ChevronLeft className="size-6 rtl-flip" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => go(1)}
+                    aria-label={t.detail?.next ?? 'Next photo'}
+                    className="absolute end-2 sm:end-6 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 transition-all"
+                  >
+                    <ChevronRight className="size-6 rtl-flip" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Bottom Interactive Thumbnail Strip */}
+            {list.length > 1 && (
+              <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 z-10">
+                {list.map((thumb, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setDir(idx > (open ?? 0) ? 1 : -1);
+                      setOpen(idx);
+                    }}
+                    className={cn(
+                      'relative size-14 sm:size-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200',
+                      idx === open
+                        ? 'border-primaryColor scale-105 shadow-md'
+                        : 'border-transparent opacity-60 hover:opacity-100'
+                    )}
+                    aria-label={`Jump to photo ${idx + 1}`}
+                  >
+                    <Image
+                      src={thumb.url}
+                      alt=""
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

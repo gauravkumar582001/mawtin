@@ -155,6 +155,7 @@ const en = {
     beds: 'Bedrooms', baths: 'Bathrooms', size: 'm² built-up', year: 'Year built', photos: 'photos', listedBy: 'Listed by', perSqm: 'per m²',
     tabView: 'Book viewing', tabOffer: 'Make offer', tabAsk: 'Ask', freehold: 'Freehold', close: 'Close', prev: 'Previous photo', next: 'Next photo',
     flow: ['Enquiry', 'Viewing', 'Offer', 'Agreement', 'Keys'],
+    share: 'Share', copied: 'Link copied to clipboard', nearby: 'Nearby places in Muscat',
   },
   viewing: {
     day: 'Choose a day', time: 'Choose a time', name: 'Full name', phone: 'Phone', email: 'Email', notes: 'Anything the agent should know? (optional)',
@@ -170,7 +171,7 @@ const en = {
   ask: { message: 'Message', default: "I'd like to know more about this home.", consent: 'I agree to be contacted about this home.', submit: 'Send message', done: 'Message sent', doneP: 'The agent usually replies within a working day.' },
   calc: { down: 'Down payment', rate: 'Interest rate', term: 'Term', years: 'years', monthly: 'Estimated monthly payment', loan: 'Loan', interest: 'Total interest', note: 'Estimate only. Your bank sets the final rate and terms.' },
   saved: { eyebrow: 'Saved', title: 'Your saved homes', empty: 'No saved homes yet', emptyP: 'Tap the heart on any home to keep it here.', added: 'Saved to your list', removed: 'Removed from saved' },
-  compare: { eyebrow: 'Compare', title: 'Compare homes', empty: 'Pick two or three homes to compare', emptyP: 'Use the Compare button on any listing.', now: 'Compare now', clear: 'Clear', lowest: 'Lowest', largest: 'Largest', perSqm: 'Price per m²', remove: 'Remove', max: 'You can compare up to three homes', price: 'Price', view: 'View home' },
+  compare: { eyebrow: 'Compare', title: 'Compare homes', empty: 'Pick two or three homes to compare', emptyP: 'Use the Compare button on any listing.', now: 'Compare now', clear: 'Clear', lowest: 'Lowest', largest: 'Largest', perSqm: 'Price per m²', remove: 'Remove', max: 'You can compare up to three homes', price: 'Price', view: 'View home', added: 'Added to comparison', removed: 'Removed from comparison' },
   auth: {
     loginTitle: 'Welcome back', loginSub: 'Sign in to follow your viewings and offers, or to open your agency workspace.',
     registerTitle: 'Create your account', registerSub: 'Save homes, book viewings and make offers from one place.',

@@ -57,6 +57,7 @@ export function Hero({ areas, featuredTitle }: { areas: Area[]; featuredTitle: s
                 alt="Contemporary luxury architecture in Muscat"
                 fill
                 priority
+                loading="eager"
                 sizes="100vw"
                 className="object-cover object-[center_50%]"
               />

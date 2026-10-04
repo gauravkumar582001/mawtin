@@ -58,6 +58,8 @@ export interface PropertyCard {
   images: ImageRef[];
   publishedAt: string | null;
   createdAt: string;
+  lat?: number | null;
+  lng?: number | null;
 }
 
 export interface PropertyDetail extends PropertyCard {

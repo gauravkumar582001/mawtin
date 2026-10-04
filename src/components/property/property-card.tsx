@@ -1,6 +1,8 @@
 'use client';
-import { BedDouble, Bath, Check, Heart, MapPin, Maximize2, Plus } from 'lucide-react';
-import { motion } from 'motion/react';
+
+import { useState } from 'react';
+import { BedDouble, Bath, Check, Heart, MapPin, Maximize2, Plus, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -14,21 +16,33 @@ export function SaveButton({ card, className }: { card: Card; className?: string
   const { t } = useI18n();
   const on = useSaved((s) => s.items.some((i) => i.id === card.id));
   const toggle = useSaved((s) => s.toggle);
+
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.85 }}
+      whileTap={{ scale: 0.8 }}
+      whileHover={{ scale: 1.1 }}
       aria-pressed={on}
-      aria-label={t.nav.saved}
+      aria-label={t.nav?.saved ?? 'Save'}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        toast(toggle(card) ? t.saved.added : t.saved.removed);
+        const added = toggle(card);
+        toast(added ? t.saved?.added ?? 'Saved to shortlist' : t.saved?.removed ?? 'Removed from shortlist');
       }}
-      className={cn('grid size-10 place-items-center rounded-full bg-white/90 text-[#16303a] backdrop-blur transition hover:scale-110', on && 'text-[#c2493f]', className)}
+      className={cn(
+        'relative grid size-9 place-items-center rounded-full bg-surface/90 backdrop-blur-md border border-border/80 shadow-md transition-colors',
+        on ? 'text-[#e11d48] border-[#e11d48]/20 bg-rose-50/90 dark:bg-rose-950/60' : 'text-text hover:text-primaryColor hover:bg-surface',
+        className
+      )}
     >
-      <motion.span key={String(on)} initial={{ scale: on ? 1.5 : 1 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 12 }}>
-        <Heart className="size-[19px]" fill={on ? 'currentColor' : 'none'} />
+      <motion.span
+        key={String(on)}
+        initial={{ scale: on ? 1.4 : 1 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+      >
+        <Heart className="size-[17px]" fill={on ? 'currentColor' : 'none'} strokeWidth={2.2} />
       </motion.span>
     </motion.button>
   );
@@ -38,85 +52,236 @@ export function CompareButton({ card, className }: { card: Card; className?: str
   const { t } = useI18n();
   const on = useCompare((s) => s.items.some((i) => i.id === card.id));
   const toggle = useCompare((s) => s.toggle);
+
   return (
     <button
       type="button"
       aria-pressed={on}
       onClick={(e) => {
         e.preventDefault();
-        if (toggle(card) === 'full') toast(t.compare.max);
+        e.stopPropagation();
+        const res = toggle(card);
+        if (res === 'full') {
+          toast(t.compare?.max ?? 'Maximum 3 properties can be compared');
+        } else if (res === 'added') {
+          toast(t.compare?.added ?? 'Added to comparison');
+        } else {
+          toast(t.compare?.removed ?? 'Removed from comparison');
+        }
       }}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition [&_svg]:size-3.5',
-        on ? 'border-teal bg-teal-soft text-teal' : 'border-line text-muted hover:border-teal hover:text-teal',
-        className,
+        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all shadow-2xs',
+        on
+          ? 'border-primaryColor bg-primary-tint text-primaryColor'
+          : 'border-border bg-surface text-text-muted hover:border-primaryColor hover:text-primaryColor',
+        className
       )}
     >
-      {on ? <Check /> : <Plus />}
-      {t.card.compare}
+      {on ? <Check className="size-3.5 stroke-[2.5]" /> : <Plus className="size-3.5 stroke-[2.5]" />}
+      <span>{t.card?.compare ?? 'Compare'}</span>
     </button>
   );
 }
 
-export function PropertyCard({ card, priority, layout = 'grid' }: { card: Card; priority?: boolean; layout?: 'grid' | 'list' }) {
+export function PropertyCard({
+  card,
+  priority,
+  layout = 'grid',
+}: {
+  card: Card;
+  priority?: boolean;
+  layout?: 'grid' | 'list';
+}) {
   const { t, lang } = useI18n();
   const title = titleOf(card, lang);
   const href = `/properties/${card.slug}`;
-  const status = card.status === 'UNDER_OFFER' ? t.card.underOffer : card.status === 'SOLD' ? t.card.sold : card.status === 'RENTED' ? t.card.rented : null;
+  const status =
+    card.status === 'UNDER_OFFER'
+      ? t.card?.underOffer ?? 'Under offer'
+      : card.status === 'SOLD'
+      ? t.card?.sold ?? 'Sold'
+      : card.status === 'RENTED'
+      ? t.card?.rented ?? 'Rented'
+      : null;
+
+  const images = card.images?.length > 0 ? card.images : [{ id: 'fallback', url: '/homes/villa.webp', alt: title }];
+  const [activeImg, setActiveImg] = useState(0);
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImg((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveImg((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
-    <TiltCard className="h-full rounded-[22px]">
-      <article className={cn('card relative h-full overflow-hidden transition-shadow duration-500 hover:shadow-lift', layout === 'list' && 'md:grid md:grid-cols-[340px_1fr]')}>
-        <Link href={href} className={cn('group relative block overflow-hidden bg-sand', layout === 'list' ? 'h-[230px] md:h-full' : 'h-[250px]')} aria-label={title}>
-          <Image
-            src={card.images[0]?.url ?? '/homes/villa.webp'}
-            alt={card.images[0]?.alt ?? title}
-            fill
-            priority={priority}
-            sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 400px"
-            className="object-cover transition-transform duration-1000 ease-out-soft group-hover:scale-[1.08]"
-          />
-          {card.images[1] && (
-            <Image
-              src={card.images[1].url}
-              alt=""
-              fill
-              sizes="400px"
-              className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-            />
+    <TiltCard className="h-full rounded-[20px]">
+      <article
+        className={cn(
+          'group/card relative h-full overflow-hidden rounded-[20px] border border-border bg-surface shadow-xs transition-all duration-300 hover:shadow-card hover:-translate-y-1',
+          layout === 'list' && 'md:grid md:grid-cols-[340px_1fr]'
+        )}
+      >
+        {/* Media / Image Container */}
+        <div
+          className={cn(
+            'group relative block overflow-hidden bg-sand-2',
+            layout === 'list' ? 'h-[230px] md:h-full min-h-[220px]' : 'aspect-[16/10] w-full'
           )}
-          <div className="absolute start-3.5 top-3.5 z-10 flex gap-1.5 text-[11.5px] font-semibold">
-            {card.featured && <span className="rounded-full bg-copper px-2.5 py-1.5 text-white">{t.card.featured}</span>}
-            {status && <span className="rounded-full bg-ink px-2.5 py-1.5 text-paper">{status}</span>}
-            <span className="rounded-full bg-white/90 px-2.5 py-1.5 text-[#16303a]">{t.typeOne[card.type]}</span>
-          </div>
-          <span className="absolute bottom-3 start-3 z-10 flex items-center gap-1.5 rounded-full bg-[rgba(10,30,36,.62)] py-1 pe-3 ps-1 text-[11.5px] text-white backdrop-blur">
-            <Avatar name={card.agency.name} color={card.agency.brandColor} size={26} />
-            {pick(lang, card.agency.name, card.agency.nameAr)}
-          </span>
-        </Link>
-        <SaveButton card={card} className="absolute end-3 top-3 z-20" />
-        <div className="p-5 [transform:translateZ(22px)]">
-          <div className="flex flex-wrap items-center justify-between gap-2.5">
-            <span className="whitespace-nowrap font-display text-[23px] font-bold tracking-[-0.03em] text-teal">
-              <span className="tabular">{omr(card.price)}</span>
-              {card.purpose === 'RENT' && <small className="ms-1 font-sans text-[12.5px] font-normal tracking-normal text-muted">{t.card.perMonth}</small>}
+        >
+          <Link href={href} aria-label={title} className="relative block h-full w-full">
+            <Image
+              src={images[activeImg]?.url ?? '/homes/villa.webp'}
+              alt={images[activeImg]?.alt ?? title}
+              fill
+              priority={priority && activeImg === 0}
+              loading={priority && activeImg === 0 ? 'eager' : 'lazy'}
+              sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 420px"
+              className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-[1.04]"
+            />
+          </Link>
+
+          {/* Floating Badges (Top Left in LTR, Top Right in RTL) */}
+          <div className="pointer-events-none absolute start-3 top-3 z-10 flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+            {/* Purpose Badge */}
+            <span className="rounded-full bg-primaryColor px-2.5 py-1 text-white uppercase tracking-wider shadow-sm">
+              {card.purpose === 'RENT'
+                ? lang === 'ar'
+                  ? 'للإيجار'
+                  : 'Rent'
+                : lang === 'ar'
+                ? 'للبيع'
+                : 'Sale'}
             </span>
-            <CompareButton card={card} />
+
+            {/* Property Type Badge */}
+            <span className="rounded-full bg-surface/90 backdrop-blur-md px-2.5 py-1 text-text border border-border/80 shadow-xs">
+              {t.typeOne?.[card.type] ?? card.type}
+            </span>
+
+            {/* Featured Badge */}
+            {card.featured && (
+              <span className="rounded-full bg-[#b0693a] px-2.5 py-1 text-white uppercase tracking-wider shadow-sm">
+                {t.card?.featured ?? 'Featured'}
+              </span>
+            )}
+
+            {/* Status Badge */}
+            {status && (
+              <span className="rounded-full bg-text px-2.5 py-1 text-white shadow-sm">
+                {status}
+              </span>
+            )}
           </div>
-          <h3 className="mb-1 mt-2 text-[19px] tracking-[-0.02em]">
-            <Link href={href} className="hover:text-teal">
-              {title}
+
+          {/* Save / Favorite Heart Button */}
+          <SaveButton card={card} className="absolute end-3 top-3 z-20" />
+
+          {/* Multi-image navigation arrows (shown on card hover if >1 image) */}
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={prevImage}
+                aria-label="Previous image"
+                className="absolute start-2 top-1/2 -translate-y-1/2 z-20 size-7 rounded-full bg-surface/85 backdrop-blur-md flex items-center justify-center text-text opacity-0 group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-105 shadow-sm"
+              >
+                <ChevronLeft className="size-4 rtl-flip" />
+              </button>
+              <button
+                type="button"
+                onClick={nextImage}
+                aria-label="Next image"
+                className="absolute end-2 top-1/2 -translate-y-1/2 z-20 size-7 rounded-full bg-surface/85 backdrop-blur-md flex items-center justify-center text-text opacity-0 group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-105 shadow-sm"
+              >
+                <ChevronRight className="size-4 rtl-flip" />
+              </button>
+
+              {/* Image pagination dots */}
+              <div className="pointer-events-none absolute bottom-3 inset-x-0 z-10 flex items-center justify-center gap-1.5">
+                {images.slice(0, 5).map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={cn(
+                      'size-1.5 rounded-full transition-all duration-300',
+                      idx === activeImg ? 'w-4 bg-white shadow-xs' : 'bg-white/60'
+                    )}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Agency Tag Strip overlay on image bottom-start */}
+          {card.agency && (
+            <Link
+              href={`/agencies/${card.agency.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-3 start-3 z-10 flex items-center gap-1.5 rounded-full bg-surface/90 backdrop-blur-md py-1 pe-3 ps-1 text-[11px] font-semibold text-text border border-border/80 shadow-xs hover:border-primaryColor hover:text-primaryColor transition-all"
+            >
+              <Avatar name={card.agency.name} color={card.agency.brandColor} size={22} />
+              <span className="truncate max-w-[130px]">{pick(lang, card.agency.name, card.agency.nameAr)}</span>
+              <ShieldCheck className="size-3 text-primaryColor shrink-0" />
             </Link>
-          </h3>
-          <div className="flex items-center gap-1.5 text-[13px] text-muted">
-            <MapPin className="size-3.5" />
-            {pick(lang, card.area.name, card.area.nameAr)}, {t.common.muscat}
+          )}
+        </div>
+
+        {/* Card Body Details */}
+        <div className="p-5 flex flex-col justify-between [transform:translateZ(20px)]">
+          <div>
+            {/* Price & Compare Row */}
+            <div className="flex items-center justify-between gap-2">
+              <div className="font-display text-[22px] font-bold text-primaryColor tracking-[-0.03em] tabular">
+                {omr(card.price)}
+                {card.purpose === 'RENT' && (
+                  <span className="ms-1 font-sans text-xs font-normal text-text-muted">
+                    {t.card?.perMonth ?? '/ month'}
+                  </span>
+                )}
+              </div>
+              <CompareButton card={card} />
+            </div>
+
+            {/* Property Title */}
+            <h3 className="mt-2.5 text-[17px] font-bold text-text tracking-[-0.02em] leading-snug">
+              <Link href={href} className="hover:text-primaryColor transition-colors line-clamp-1">
+                {title}
+              </Link>
+            </h3>
+
+            {/* Area Location */}
+            <div className="mt-1 flex items-center gap-1.5 text-xs text-text-muted">
+              <MapPin className="size-3.5 text-primaryColor shrink-0" />
+              <span className="truncate">
+                {pick(lang, card.area.name, card.area.nameAr)}, {t.common?.muscat ?? 'Muscat'}
+              </span>
+            </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-4 border-t border-dashed border-line pt-3.5 text-[13px] text-ink-2 [&_svg]:size-4 [&_svg]:text-teal">
-            <span className="inline-flex items-center gap-1.5"><BedDouble /><b className="tabular">{card.bedrooms}</b> {t.card.bd}</span>
-            <span className="inline-flex items-center gap-1.5"><Bath /><b className="tabular">{card.bathrooms}</b> {t.card.ba}</span>
-            <span className="inline-flex items-center gap-1.5"><Maximize2 /><b className="tabular">{card.builtUpArea}</b> {t.card.sqm}</span>
+
+          {/* Specs Footer (Bedrooms, Bathrooms, Area) */}
+          <div className="mt-4 flex items-center justify-between border-t border-border/80 pt-3.5 text-xs text-text-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <BedDouble className="size-4 text-primaryColor" />
+              <b className="tabular text-text font-bold">{card.bedrooms}</b>{' '}
+              <span>{t.card?.bd ?? 'bd'}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1.5">
+              <Bath className="size-4 text-primaryColor" />
+              <b className="tabular text-text font-bold">{card.bathrooms}</b>{' '}
+              <span>{t.card?.ba ?? 'ba'}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1.5">
+              <Maximize2 className="size-4 text-primaryColor" />
+              <b className="tabular text-text font-bold">{card.builtUpArea}</b>{' '}
+              <span>{t.card?.sqm ?? 'm²'}</span>
+            </span>
           </div>
         </div>
       </article>
@@ -125,20 +290,31 @@ export function PropertyCard({ card, priority, layout = 'grid' }: { card: Card; 
 }
 
 /** Staggered grid entrance for lists of cards. */
-export function CardGrid({ cards, layout = 'grid', priorityFirst }: { cards: Card[]; layout?: 'grid' | 'list'; priorityFirst?: boolean }) {
+export function CardGrid({
+  cards,
+  layout = 'grid',
+  priorityFirst,
+}: {
+  cards: Card[];
+  layout?: 'grid' | 'list';
+  priorityFirst?: boolean;
+}) {
   return (
     <motion.div
       layout
       className={cn('grid gap-6', layout === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1')}
       initial="hidden"
       animate="show"
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
     >
       {cards.map((c, i) => (
         <motion.div
           key={c.id}
           layout
-          variants={{ hidden: { opacity: 0, y: 26, rotateX: 8 }, show: { opacity: 1, y: 0, rotateX: 0, transition: { duration: 0.65 } } }}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+          }}
           className="relative"
         >
           <PropertyCard card={c} layout={layout} priority={priorityFirst && i < 3} />

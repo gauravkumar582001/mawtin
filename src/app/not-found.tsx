@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { btn } from '@/components/ui';
+import { btn } from '@/lib/ui-styles';
 import { getDict } from '@/i18n/server';
 
 export default async function NotFound() {
