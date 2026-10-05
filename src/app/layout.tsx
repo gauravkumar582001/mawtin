@@ -40,6 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       dir={lang === 'ar' ? 'rtl' : 'ltr'}
       className={`${manrope.variable} ${notoArabic.variable} ${bricolage.variable} ${readex.variable} ${reem.variable}`}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <head>
         <script

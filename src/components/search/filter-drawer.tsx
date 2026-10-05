@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, SlidersHorizontal, Check, RotateCcw } from 'lucide-react';
+import { X, SlidersHorizontal, Check, RotateCcw, Building2, Bath } from 'lucide-react';
 import { PurposeToggle } from '@/components/home/search-bar';
 import { btn, inputCls } from '@/lib/ui-styles';
 import { useI18n } from '@/i18n/client';
@@ -21,6 +21,13 @@ const AMENITIES = [
 ];
 
 const TYPES = ['VILLA', 'APARTMENT', 'TOWNHOUSE', 'PENTHOUSE'] as const;
+
+const AGENCIES = [
+  { slug: 'saraya-estates', name: 'Saraya Estates', nameAr: 'سرايا العقارية' },
+  { slug: 'al-khaleej-homes', name: 'Al Khaleej Homes', nameAr: 'منازل الخليج' },
+  { slug: 'liwan-realty', name: 'Liwan Realty', nameAr: 'ليوان للعقارات' },
+  { slug: 'sidr-and-stone', name: 'Sidr & Stone', nameAr: 'سدر وحجر' },
+];
 
 export interface FilterDrawerProps {
   open: boolean;
@@ -49,6 +56,9 @@ export function FilterDrawer({
   const [purpose, setPurpose] = useState<'buy' | 'rent'>(params.purpose === 'rent' ? 'rent' : 'buy');
   const [type, setType] = useState<string | undefined>(params.type);
   const [beds, setBeds] = useState<string | undefined>(params.beds);
+  const [baths, setBaths] = useState<string | undefined>(params.baths);
+  const [minArea, setMinArea] = useState<number>(Number(params.minArea ?? 0));
+  const [agency, setAgency] = useState<string | undefined>(params.agency);
   const [selectedAreas, setSelectedAreas] = useState<string[]>(
     params.area?.split(',').filter(Boolean) ?? []
   );
@@ -70,6 +80,9 @@ export function FilterDrawer({
       setPurpose(params.purpose === 'rent' ? 'rent' : 'buy');
       setType(params.type);
       setBeds(params.beds);
+      setBaths(params.baths);
+      setMinArea(Number(params.minArea ?? 0));
+      setAgency(params.agency);
       setSelectedAreas(params.area?.split(',').filter(Boolean) ?? []);
       setSelectedAmen(params.amenities?.split(',').filter(Boolean) ?? []);
       setQ(params.q ?? '');
@@ -106,6 +119,9 @@ export function FilterDrawer({
       purpose,
       type: type || undefined,
       beds: beds || undefined,
+      baths: baths || undefined,
+      minArea: minArea > 0 ? String(minArea) : undefined,
+      agency: agency || undefined,
       area: selectedAreas.join(',') || undefined,
       amenities: selectedAmen.join(',') || undefined,
       q: q || undefined,
@@ -118,6 +134,9 @@ export function FilterDrawer({
     setPurpose('buy');
     setType(undefined);
     setBeds(undefined);
+    setBaths(undefined);
+    setMinArea(0);
+    setAgency(undefined);
     setSelectedAreas([]);
     setSelectedAmen([]);
     setQ('');
@@ -129,6 +148,9 @@ export function FilterDrawer({
   const activeFiltersCount =
     (type ? 1 : 0) +
     (beds ? 1 : 0) +
+    (baths ? 1 : 0) +
+    (minArea > 0 ? 1 : 0) +
+    (agency ? 1 : 0) +
     selectedAreas.length +
     selectedAmen.length +
     (q ? 1 : 0) +
@@ -157,7 +179,7 @@ export function FilterDrawer({
             animate={{ x: 0 }}
             exit={{ x: lang === 'ar' ? '-100%' : '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="relative z-10 flex h-full w-full max-w-[460px] flex-col bg-surface shadow-2xl border-s border-border"
+            className="relative z-10 flex h-full w-full max-w-[480px] flex-col bg-surface shadow-2xl border-s border-border"
             role="dialog"
             aria-modal="true"
             aria-label={t.results?.filters ?? 'Filters'}
@@ -277,7 +299,7 @@ export function FilterDrawer({
                 </div>
               </div>
 
-              {/* Bedrooms */}
+              {/* Bedrooms Buttons */}
               <div>
                 <h4 className={sectionHeading}>{t.search?.beds ?? 'Bedrooms'}</h4>
                 <div className="grid grid-cols-6 rounded-xl border border-border overflow-hidden">
@@ -296,6 +318,96 @@ export function FilterDrawer({
                         )}
                       >
                         {b === 0 ? (t.search?.any ?? 'Any') : b === 5 ? '5+' : b}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Bathrooms Buttons */}
+              <div>
+                <h4 className={sectionHeading}>{t.detail?.baths ?? 'Bathrooms'}</h4>
+                <div className="grid grid-cols-5 rounded-xl border border-border overflow-hidden">
+                  {[0, 1, 2, 3, 4].map((ba) => {
+                    const isSelected = ba === 0 ? !baths : Number(baths) === ba;
+                    return (
+                      <button
+                        key={ba}
+                        type="button"
+                        onClick={() => setBaths(ba === 0 ? undefined : String(ba))}
+                        className={cn(
+                          'py-2.5 text-xs font-semibold transition-colors border-s border-border first:border-s-0',
+                          isSelected
+                            ? 'bg-primaryColor text-white'
+                            : 'bg-surface text-text hover:bg-surface-hover'
+                        )}
+                      >
+                        {ba === 0 ? (t.search?.any ?? 'Any') : ba === 4 ? '4+' : ba}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Minimum Built-up Area Slider */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className={sectionHeading}>
+                    {lang === 'ar' ? 'المساحة المبنية الصغرى' : 'Min Built-up Area'}
+                  </h4>
+                  <div className="font-display text-sm font-bold text-primaryColor tabular">
+                    {minArea > 0 ? `${minArea} m²` : (lang === 'ar' ? 'الكل' : 'Any size')}
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={500}
+                  step={25}
+                  value={minArea}
+                  onChange={(e) => setMinArea(Number(e.target.value))}
+                  className="w-full accent-[var(--primaryColor)] cursor-pointer"
+                />
+                <div className="flex justify-between text-xs text-text-muted mt-1 tabular">
+                  <span>0 m²</span>
+                  <span>250 m²</span>
+                  <span>500+ m²</span>
+                </div>
+              </div>
+
+              {/* Agency Filter */}
+              <div>
+                <h4 className={sectionHeading}>
+                  {lang === 'ar' ? 'الوكالة العقارية' : 'Licensed Real Estate Agency'}
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAgency(undefined)}
+                    className={cn(
+                      'rounded-full px-3 py-1.5 text-xs font-semibold transition-all border',
+                      !agency
+                        ? 'border-primaryColor bg-primaryColor text-white shadow-xs'
+                        : 'border-border bg-surface text-text hover:border-primaryColor'
+                    )}
+                  >
+                    {lang === 'ar' ? 'جميع الوكالات' : 'All Agencies'}
+                  </button>
+                  {AGENCIES.map((ag) => {
+                    const isSelected = agency === ag.slug;
+                    return (
+                      <button
+                        key={ag.slug}
+                        type="button"
+                        onClick={() => setAgency(isSelected ? undefined : ag.slug)}
+                        className={cn(
+                          'rounded-full px-3 py-1.5 text-xs font-semibold transition-all border',
+                          isSelected
+                            ? 'border-primaryColor bg-primaryColor text-white shadow-xs'
+                            : 'border-border bg-surface text-text hover:border-primaryColor'
+                        )}
+                      >
+                        {lang === 'ar' ? ag.nameAr : ag.name}
                       </button>
                     );
                   })}

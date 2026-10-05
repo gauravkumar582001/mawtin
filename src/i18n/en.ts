@@ -143,7 +143,7 @@ const en = {
     rights: 'All rights reserved.',
     currency: 'OMR',
   },
-  card: { perMonth: '/ month', bd: 'bd', ba: 'ba', sqm: 'm²', featured: 'Featured', compare: 'Compare', underOffer: 'Under offer', sold: 'Sold', rented: 'Rented' },
+  card: { perMonth: '/ month', bd: 'bd', ba: 'ba', sqm: 'm²', featured: 'Featured', compare: 'Compare', underOffer: 'Under offer', sold: 'Sold', rented: 'Rented', viewDetail: 'View Detail', viewMore: 'View More', fullDetails: 'View Full Details' },
   results: {
     title: 'Homes for sale and rent', found: 'homes found', sort: 'Sort', newest: 'Newest', priceAsc: 'Price: low to high', priceDesc: 'Price: high to low', sizeDesc: 'Largest first', popular: 'Most viewed',
     filters: 'Filters', purpose: 'Purpose', areas: 'Neighbourhoods', maxPrice: 'Max price', amenities: 'Amenities', clear: 'Clear all', none: 'No homes match these filters', noneP: 'Try a wider budget or another neighbourhood.',

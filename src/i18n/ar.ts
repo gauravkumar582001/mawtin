@@ -145,7 +145,7 @@ const ar: Dict = {
     rights: 'جميع الحقوق محفوظة.',
     currency: 'ر.ع.',
   },
-  card: { perMonth: '/ شهرياً', bd: 'غرف', ba: 'حمام', sqm: 'م²', featured: 'مميز', compare: 'مقارنة', underOffer: 'قيد العرض', sold: 'مُباع', rented: 'مؤجَّر' },
+  card: { perMonth: '/ شهرياً', bd: 'غرف', ba: 'حمام', sqm: 'م²', featured: 'مميز', compare: 'مقارنة', underOffer: 'قيد العرض', sold: 'مُباع', rented: 'مؤجَّر', viewDetail: 'عرض التفاصيل', viewMore: 'عرض المزيد', fullDetails: 'عرض تفاصيل العقار كاملة' },
   results: {
     title: 'منازل للبيع والإيجار', found: 'منزلاً', sort: 'الترتيب', newest: 'الأحدث', priceAsc: 'السعر: من الأقل', priceDesc: 'السعر: من الأعلى', sizeDesc: 'الأكبر مساحة', popular: 'الأكثر مشاهدة',
     filters: 'الفلاتر', purpose: 'الغرض', areas: 'الأحياء', maxPrice: 'السعر الأقصى', amenities: 'المرافق', clear: 'مسح الكل', none: 'لا توجد منازل مطابقة', noneP: 'جرّب ميزانية أوسع أو حياً آخر.',

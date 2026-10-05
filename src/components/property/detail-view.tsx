@@ -107,6 +107,13 @@ export function DetailView({
     [Bath, p.bathrooms, t.detail?.baths ?? 'Bathrooms'],
     [Maximize2, `${p.builtUpArea} m²`, t.detail?.size ?? 'Built-up Area'],
     [CalendarRange, p.yearBuilt ?? '2023', t.detail?.year ?? 'Year built'],
+    [
+      ShieldCheck,
+      p.freehold
+        ? (t.detail?.freehold ?? 'Freehold')
+        : (lang === 'ar' ? 'مواطنين / خليجي' : 'GCC / Citizens'),
+      lang === 'ar' ? 'حالة التملك' : 'Ownership',
+    ],
   ];
 
   return (
@@ -237,7 +244,7 @@ export function DetailView({
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_390px]">
           <div className="min-w-0 space-y-9">
             {/* Fact Sheet Grid */}
-            <Reveal className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Reveal className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {facts.map(([Icon, val, label]) => (
                 <div
                   key={label}
@@ -247,10 +254,10 @@ export function DetailView({
                     <Icon className="size-5 stroke-[2.2]" />
                   </div>
                   <div className="min-w-0">
-                    <b className="tabular block font-display text-xl font-bold text-text leading-tight truncate">
+                    <b className="tabular block font-display text-lg font-bold text-text leading-tight truncate">
                       {val}
                     </b>
-                    <span className="text-xs text-text-muted font-medium truncate block">
+                    <span className="text-[11.5px] text-text-muted font-medium truncate block mt-0.5">
                       {label}
                     </span>
                   </div>
@@ -268,27 +275,66 @@ export function DetailView({
               </div>
             </Reveal>
 
-            {/* Amenities & Features */}
+            {/* Structured Amenities Grid (Interior, Exterior, Community) */}
             <Reveal className="border-t border-border/80 pt-8">
-              <h2 className="mb-4 text-xl sm:text-2xl font-bold text-text">
+              <h2 className="mb-5 text-xl sm:text-2xl font-bold text-text">
                 {t.detail?.amenities ?? 'Amenities & Features'}
               </h2>
-              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {p.amenities.map((k) => {
-                  const Icon = AMENITY_ICON[k] ?? Heart;
-                  return (
-                    <li
-                      key={k}
-                      className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 text-xs font-semibold text-text shadow-2xs hover:border-primaryColor transition-colors"
-                    >
-                      <div className="grid size-7 place-items-center rounded-lg bg-primary-tint text-primaryColor shrink-0">
-                        <Icon className="size-4" />
+              <div className="space-y-4">
+                {[
+                  {
+                    id: 'interior',
+                    title: lang === 'ar' ? 'الميزات والتجهيزات الداخلية' : 'Interior Features',
+                    icon: Sofa,
+                    keys: ['ac', 'maid', 'majlis', 'wifi'],
+                  },
+                  {
+                    id: 'exterior',
+                    title: lang === 'ar' ? 'الميزات الخارجية والحديقة' : 'Exterior Features',
+                    icon: Flower2,
+                    keys: ['pool', 'garden', 'balcony', 'sea'],
+                  },
+                  {
+                    id: 'community',
+                    title: lang === 'ar' ? 'المبنى والمرافق المشتركة' : 'Community & Facilities',
+                    icon: Building,
+                    keys: ['gym', 'parking', 'security', 'elevator'],
+                  },
+                ]
+                  .map((cat) => ({
+                    ...cat,
+                    items: cat.keys.filter((k) => p.amenities.includes(k)),
+                  }))
+                  .filter((cat) => cat.items.length > 0)
+                  .map((cat) => {
+                    const CatIcon = cat.icon;
+                    return (
+                      <div key={cat.id} className="rounded-[20px] border border-border bg-surface p-4 sm:p-5 shadow-2xs">
+                        <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-primaryColor">
+                          <CatIcon className="size-4" />
+                          <span>{cat.title}</span>
+                          <span className="text-text-muted font-normal">({cat.items.length})</span>
+                        </div>
+                        <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                          {cat.items.map((k) => {
+                            const Icon = AMENITY_ICON[k] ?? Heart;
+                            return (
+                              <li
+                                key={k}
+                                className="flex items-center gap-2.5 rounded-xl border border-border bg-surface-hover/50 px-3.5 py-2.5 text-xs font-semibold text-text shadow-2xs hover:border-primaryColor transition-colors"
+                              >
+                                <div className="grid size-6 place-items-center rounded-lg bg-primary-tint text-primaryColor shrink-0">
+                                  <Icon className="size-3.5" />
+                                </div>
+                                <span className="truncate">{t.amenity?.[k] ?? k}</span>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
-                      <span className="truncate">{t.amenity?.[k] ?? k}</span>
-                    </li>
-                  );
-                })}
-              </ul>
+                    );
+                  })}
+              </div>
             </Reveal>
 
             {/* Interactive 3D Model Inspection */}

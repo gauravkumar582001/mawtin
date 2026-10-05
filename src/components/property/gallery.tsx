@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Images, X, Maximize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Images, X, Maximize2, ZoomIn, ZoomOut } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
 import { useI18n } from '@/i18n/client';
@@ -12,12 +12,15 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
   const { t, lang } = useI18n();
   const [open, setOpen] = useState<number | null>(null);
   const [dir, setDir] = useState(1);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [previewIdx, setPreviewIdx] = useState(0);
 
   const list = images.length > 0 ? images : [{ id: 'fallback', url: '/homes/villa.webp', alt: title }];
 
   const go = useCallback(
     (d: number) => {
       setDir(d);
+      setIsZoomed(false);
       setOpen((curr) => (curr === null ? curr : (curr + d + list.length) % list.length));
     },
     [list.length]
@@ -46,7 +49,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
           {/* Main Hero Photo (Spans 2 cols & 2 rows on desktop) */}
           <motion.button
             type="button"
-            onClick={() => setOpen(0)}
+            onClick={() => setOpen(previewIdx)}
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
@@ -54,8 +57,8 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
             aria-label={`${title} - Photo 1`}
           >
             <Image
-              src={list[0]?.url ?? '/homes/villa.webp'}
-              alt={list[0]?.alt ?? title}
+              src={list[previewIdx]?.url ?? '/homes/villa.webp'}
+              alt={list[previewIdx]?.alt ?? title}
               fill
               priority
               loading="eager"
@@ -79,6 +82,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
               src={list[1]?.url ?? list[0]?.url ?? '/homes/villa.webp'}
               alt={list[1]?.alt ?? title}
               fill
+              loading="eager"
               sizes="(max-width: 1024px) 30vw, 25vw"
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
@@ -146,10 +150,56 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
           </motion.button>
         </div>
 
+        {/* Mobile Prev / Next Carousel Controls (on small preview area) */}
+        {list.length > 1 && (
+          <div className="sm:hidden">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreviewIdx((curr) => (curr === 0 ? list.length - 1 : curr - 1));
+              }}
+              aria-label={t.detail?.prev ?? 'Previous photo'}
+              className="absolute start-3 top-1/2 -translate-y-1/2 z-10 size-9 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-text hover:bg-surface shadow-md border border-border/80"
+            >
+              <ChevronLeft className="size-4 rtl-flip" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreviewIdx((curr) => (curr === list.length - 1 ? 0 : curr + 1));
+              }}
+              aria-label={t.detail?.next ?? 'Next photo'}
+              className="absolute end-3 top-1/2 -translate-y-1/2 z-10 size-9 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-text hover:bg-surface shadow-md border border-border/80"
+            >
+              <ChevronRight className="size-4 rtl-flip" />
+            </button>
+
+            {/* Mobile Pagination Dots */}
+            <div className="absolute bottom-4 start-4 z-10 flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-full pointer-events-none">
+              {list.slice(0, 5).map((_, idx) => (
+                <span
+                  key={idx}
+                  className={cn(
+                    'h-1.5 rounded-full transition-all duration-300',
+                    idx === previewIdx ? 'w-3.5 bg-white shadow-xs' : 'w-1.5 bg-white/60'
+                  )}
+                />
+              ))}
+              {list.length > 5 && (
+                <span className="text-[10px] font-bold text-white ps-0.5">
+                  +{list.length - 5}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Floating View All Photos Button */}
         <button
           type="button"
-          onClick={() => setOpen(0)}
+          onClick={() => setOpen(previewIdx)}
           className="absolute bottom-4 end-4 z-10 flex items-center gap-2 rounded-full border border-border/80 bg-surface/90 backdrop-blur-md px-4 py-2 text-xs font-bold text-text shadow-md hover:bg-surface hover:border-primaryColor transition-all duration-200"
         >
           <Images className="size-4 text-primaryColor" />
@@ -189,7 +239,19 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setOpen(null)}
+                  onClick={() => setIsZoomed((z) => !z)}
+                  aria-label={isZoomed ? 'Zoom out' : 'Zoom in'}
+                  className="grid size-10 place-items-center rounded-full bg-white/10 text-white/90 hover:bg-white/20 hover:text-white transition-colors"
+                  title={isZoomed ? 'Zoom out' : 'Zoom in'}
+                >
+                  {isZoomed ? <ZoomOut className="size-4" /> : <ZoomIn className="size-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsZoomed(false);
+                    setOpen(null);
+                  }}
                   aria-label={t.detail?.close ?? 'Close'}
                   className="grid size-10 place-items-center rounded-full bg-white/10 text-white/90 hover:bg-white/20 hover:text-white transition-colors"
                   autoFocus
@@ -206,10 +268,14 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
                   key={open}
                   custom={dir}
                   initial={{ opacity: 0, x: dir * 50, scale: 0.98 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  animate={{ opacity: 1, x: 0, scale: isZoomed ? 1.45 : 1 }}
                   exit={{ opacity: 0, x: dir * -50 }}
                   transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-                  className="relative h-full max-h-[75vh] w-full max-w-[1200px]"
+                  className={cn(
+                    'relative h-full max-h-[75vh] w-full max-w-[1200px] transition-transform duration-300',
+                    isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                  )}
+                  onClick={() => setIsZoomed((z) => !z)}
                 >
                   <Image
                     src={list[open]?.url ?? '/homes/villa.webp'}

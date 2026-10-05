@@ -197,6 +197,10 @@ export interface SearchParams {
   maxPrice?: string;
   minPrice?: string;
   beds?: string;
+  baths?: string;
+  minArea?: string;
+  maxArea?: string;
+  agency?: string;
   amenities?: string;
   sort?: string;
   q?: string;

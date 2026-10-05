@@ -116,6 +116,9 @@ export function mockSearch(sp: SearchParams & { featured?: boolean; limit?: numb
     (!sp.maxPrice || l.price <= Number(sp.maxPrice)) &&
     (!sp.minPrice || l.price >= Number(sp.minPrice)) &&
     (!sp.beds || l.bedrooms >= Number(sp.beds)) &&
+    (!sp.baths || l.bathrooms >= Number(sp.baths)) &&
+    (!sp.minArea || l.builtUpArea >= Number(sp.minArea)) &&
+    (!sp.maxArea || l.builtUpArea <= Number(sp.maxArea)) &&
     (!amen?.length || amen.every((a) => l.amenities.includes(a))) &&
     (sp.featured === undefined || l.featured === sp.featured) &&
     (!sp.q || `${l.title} ${l.titleAr} ${l.area.name}`.toLowerCase().includes(sp.q.toLowerCase())),

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BedDouble, Bath, Check, Heart, MapPin, Maximize2, Plus, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
+import { BedDouble, Bath, Check, Heart, MapPin, Maximize2, Plus, ChevronLeft, ChevronRight, ShieldCheck, Images, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -131,7 +131,7 @@ export function PropertyCard({
         <div
           className={cn(
             'group relative block overflow-hidden bg-sand-2',
-            layout === 'list' ? 'h-[230px] md:h-full min-h-[220px]' : 'aspect-[16/10] w-full'
+            layout === 'list' ? 'h-[230px] md:h-full min-h-[220px]' : 'aspect-[21/12] w-full'
           )}
         >
           <Link href={href} aria-label={title} className="relative block h-full w-full">
@@ -189,7 +189,7 @@ export function PropertyCard({
                 type="button"
                 onClick={prevImage}
                 aria-label="Previous image"
-                className="absolute start-2 top-1/2 -translate-y-1/2 z-20 size-7 rounded-full bg-surface/85 backdrop-blur-md flex items-center justify-center text-text opacity-0 group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-105 shadow-sm"
+                className="absolute start-2.5 top-1/2 -translate-y-1/2 z-20 size-8 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-text opacity-90 sm:opacity-0 sm:group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-110 active:scale-95 shadow-md border border-border/60"
               >
                 <ChevronLeft className="size-4 rtl-flip" />
               </button>
@@ -197,7 +197,7 @@ export function PropertyCard({
                 type="button"
                 onClick={nextImage}
                 aria-label="Next image"
-                className="absolute end-2 top-1/2 -translate-y-1/2 z-20 size-7 rounded-full bg-surface/85 backdrop-blur-md flex items-center justify-center text-text opacity-0 group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-105 shadow-sm"
+                className="absolute end-2.5 top-1/2 -translate-y-1/2 z-20 size-8 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-text opacity-90 sm:opacity-0 sm:group-hover/card:opacity-100 transition-all hover:bg-surface hover:scale-110 active:scale-95 shadow-md border border-border/60"
               >
                 <ChevronRight className="size-4 rtl-flip" />
               </button>
@@ -229,6 +229,23 @@ export function PropertyCard({
               <ShieldCheck className="size-3 text-primaryColor shrink-0" />
             </Link>
           )}
+
+          {/* Photo Count Badge & View Detail Button on bottom-end */}
+          <div className="absolute bottom-3 end-3 z-20 flex items-center gap-1.5">
+            {images.length > 1 && (
+              <div className="pointer-events-none flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2 py-0.5 text-[10.5px] font-semibold text-white/95 shadow-2xs">
+                <Images className="size-3" />
+                <span>{images.length}</span>
+              </div>
+            )}
+            <Link
+              href={href}
+              className="flex items-center gap-1 rounded-full bg-surface/95 backdrop-blur-md px-2.5 py-1 text-[11px] font-bold text-text border border-border/80 shadow-xs hover:bg-primaryColor hover:text-white hover:border-primaryColor transition-all group/vmore"
+            >
+              <span>{t.card?.viewDetail ?? 'View Detail'}</span>
+              <ArrowUpRight className="size-3 transition-transform group-hover/vmore:translate-x-0.5 group-hover/vmore:-translate-y-0.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Card Body Details */}

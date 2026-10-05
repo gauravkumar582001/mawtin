@@ -58,6 +58,9 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
   const activeFiltersCount =
     (params.type ? 1 : 0) +
     (params.beds ? 1 : 0) +
+    (params.baths ? 1 : 0) +
+    (params.minArea ? 1 : 0) +
+    (params.agency ? 1 : 0) +
     selectedAreas.length +
     selectedAmen.length +
     (params.q ? 1 : 0) +
@@ -73,7 +76,17 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
   const h4 = 'mb-2.5 font-sans text-xs font-bold uppercase tracking-[0.12em] text-text-muted rtl:tracking-normal';
 
   const clearAllFilters = () =>
-    update({ type: undefined, beds: undefined, area: undefined, amenities: undefined, q: undefined, maxPrice: undefined });
+    update({
+      type: undefined,
+      beds: undefined,
+      baths: undefined,
+      minArea: undefined,
+      agency: undefined,
+      area: undefined,
+      amenities: undefined,
+      q: undefined,
+      maxPrice: undefined,
+    });
 
   const filters = (
     <aside aria-label={t.results.filters} className="card hidden lg:grid gap-6 self-start p-5 lg:sticky lg:top-24 border border-border bg-surface rounded-[20px] shadow-xs">
@@ -370,6 +383,33 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
               <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text font-medium shadow-2xs">
                 <span>Max: {omr(Number(params.maxPrice))}</span>
                 <button type="button" onClick={() => update({ maxPrice: undefined })} aria-label="Remove filter" className="hover:text-primaryColor">
+                  <X className="size-3" />
+                </button>
+              </span>
+            )}
+
+            {params.baths && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text font-medium shadow-2xs">
+                <span>{params.baths}+ {t.card?.ba ?? 'ba'}</span>
+                <button type="button" onClick={() => update({ baths: undefined })} aria-label="Remove filter" className="hover:text-primaryColor">
+                  <X className="size-3" />
+                </button>
+              </span>
+            )}
+
+            {params.minArea && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text font-medium shadow-2xs">
+                <span>≥ {params.minArea} m²</span>
+                <button type="button" onClick={() => update({ minArea: undefined })} aria-label="Remove filter" className="hover:text-primaryColor">
+                  <X className="size-3" />
+                </button>
+              </span>
+            )}
+
+            {params.agency && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs text-text font-medium shadow-2xs">
+                <span className="capitalize">{params.agency.replace(/-/g, ' ')}</span>
+                <button type="button" onClick={() => update({ agency: undefined })} aria-label="Remove filter" className="hover:text-primaryColor">
                   <X className="size-3" />
                 </button>
               </span>
