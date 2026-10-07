@@ -93,7 +93,16 @@ export interface Agency extends AgencyRef {
   website: string | null;
   foundedYear: number | null;
   area: { slug: string; name: string; nameAr: string } | null;
-  team: { id: string; fullName: string; title: string | null; titleAr: string | null; role?: string }[];
+  team: {
+    id: string;
+    fullName: string;
+    title: string | null;
+    titleAr: string | null;
+    role?: string;
+    phone?: string | null;
+    email?: string | null;
+    languages?: string[];
+  }[];
   listingCount: number;
   memberCount?: number;
 }

@@ -103,6 +103,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
               src={list[2]?.url ?? list[0]?.url ?? '/homes/villa.webp'}
               alt={list[2]?.alt ?? title}
               fill
+              loading="eager"
               sizes="(max-width: 1024px) 30vw, 25vw"
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
@@ -123,6 +124,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
               src={list[3]?.url ?? list[1]?.url ?? '/homes/villa.webp'}
               alt={list[3]?.alt ?? title}
               fill
+              loading="eager"
               sizes="(max-width: 1024px) 30vw, 25vw"
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />
@@ -143,6 +145,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
               src={list[4]?.url ?? list[2]?.url ?? '/homes/villa.webp'}
               alt={list[4]?.alt ?? title}
               fill
+              loading="eager"
               sizes="(max-width: 1024px) 30vw, 25vw"
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
             />

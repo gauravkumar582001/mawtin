@@ -89,7 +89,15 @@ export const LISTINGS: PropertyDetail[] = ROWS.map((r, i) => {
 for (const a of AREAS) a.listingCount = LISTINGS.filter((l) => l.area.slug === a.slug).length;
 for (const g of AGENCIES) {
   g.listingCount = LISTINGS.filter((l) => l.agency.slug === g.slug).length;
-  g.team = TEAM[g.slug].map((m) => ({ id: m.id, fullName: m.fullName, title: m.title, titleAr: m.titleAr }));
+  g.team = TEAM[g.slug].map((m) => ({
+    id: m.id,
+    fullName: m.fullName,
+    title: m.title,
+    titleAr: m.titleAr,
+    phone: m.phone,
+    email: m.email,
+    languages: ['Arabic', 'English'],
+  }));
   g.memberCount = g.team.length;
 }
 
