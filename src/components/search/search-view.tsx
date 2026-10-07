@@ -216,7 +216,7 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
       {filters}
       <div className="min-w-0">
         <div className="mb-6">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-text-muted">
                 {lang === 'ar' ? 'خريطة العقارات المتاحة' : 'Properties on map'}
@@ -225,7 +225,7 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
                 {results.items.filter((p) => p.lat && p.lng).length} {lang === 'ar' ? 'عقار معروض' : 'plotted'}
               </span>
             </div>
-            <div className="flex items-center gap-1 rounded-full border border-line bg-surface p-1 shadow-2xs">
+            <div className="flex items-center gap-1 rounded-full border border-line bg-surface p-1 shadow-2xs self-start sm:self-auto overflow-x-auto max-w-full">
               <button
                 type="button"
                 onClick={() => setMapMode('interactive')}
@@ -282,20 +282,20 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
           )}
         </div>
         {/* Results Header Bar */}
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3.5">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3.5">
           <div className="flex items-center gap-3" aria-live="polite">
             <span className="text-sm text-text-muted">
-              <b className="tabular font-display text-[22px] font-bold text-text me-1.5">{total}</b>
+              <b className="tabular font-display text-[20px] sm:text-[22px] font-bold text-text me-1.5">{total}</b>
               {t.results?.found ?? 'homes found'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             {/* Filter Drawer Trigger Button */}
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primaryColor hover:text-primaryColor transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-border bg-surface px-3 sm:px-4 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primaryColor hover:text-primaryColor transition-all"
             >
               <SlidersHorizontal className="size-3.5 text-primaryColor" />
               <span>{t.results?.filters ?? 'Filters'}</span>
@@ -312,7 +312,7 @@ export function SearchView({ results, areas, params, areaCounts }: { results: Pa
               id="f-sort"
               value={params.sort ?? 'newest'}
               onChange={(e) => update({ sort: e.target.value })}
-              className="h-9 rounded-full border border-border bg-surface px-3 text-xs font-semibold text-text shadow-2xs outline-none focus:border-primaryColor"
+              className="h-9 rounded-full border border-border bg-surface px-2.5 sm:px-3 text-xs font-semibold text-text shadow-2xs outline-none focus:border-primaryColor max-w-[130px] sm:max-w-none cursor-pointer"
             >
               <option value="newest">{t.results?.newest ?? 'Newest'}</option>
               <option value="price_asc">{t.results?.priceAsc ?? 'Price: low to high'}</option>

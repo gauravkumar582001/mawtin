@@ -327,7 +327,7 @@ export function MapLibreMap({
 
         return (
           <div
-            className="absolute bottom-4 end-4 z-20 w-[320px] sm:w-[360px] md:w-[380px] rounded-[22px] border border-border/80 bg-surface shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+            className="absolute bottom-3 inset-x-3 sm:inset-x-auto sm:bottom-4 sm:end-4 z-20 w-auto sm:w-[360px] md:w-[380px] max-w-[calc(100vw-24px)] rounded-[22px] border border-border/80 bg-surface shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
             role="dialog"
             aria-label={pick(lang, activeProperty.title, activeProperty.titleAr)}
           >

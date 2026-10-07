@@ -36,9 +36,9 @@ export function MortgageCalculator({ price }: { price: number }) {
   const interestRatio = totalPaid > 0 ? (interest / totalPaid) * 100 : 30;
 
   return (
-    <div className="rounded-[24px] border border-border bg-surface p-6 shadow-xs">
+    <div className="rounded-[22px] sm:rounded-[24px] border border-border bg-surface p-4 sm:p-6 shadow-xs">
       {/* Monthly Payment Hero Box */}
-      <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-primary-tint/90 via-surface to-primary-tint/40 p-6 border border-primaryColor/20 shadow-xs">
+      <div className="relative overflow-hidden rounded-[18px] sm:rounded-[20px] bg-gradient-to-br from-primary-tint/90 via-surface to-primary-tint/40 p-4 sm:p-6 border border-primaryColor/20 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primaryColor">
@@ -49,7 +49,7 @@ export function MortgageCalculator({ price }: { price: number }) {
               key={pay}
               initial={{ y: -8, opacity: 0.4 }}
               animate={{ y: 0, opacity: 1 }}
-              className="mt-2 font-display text-[36px] sm:text-[42px] font-extrabold text-primaryColor tracking-tight tabular"
+              className="mt-2 font-display text-[32px] sm:text-[42px] font-extrabold text-primaryColor tracking-tight tabular"
             >
               {omr(pay)}
               <span className="ms-2 font-sans text-xs font-medium text-text-muted">
@@ -89,7 +89,7 @@ export function MortgageCalculator({ price }: { price: number }) {
             />
           </div>
 
-          <div className="mt-2.5 flex items-center justify-between text-xs text-text-muted">
+          <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-text-muted">
             <span className="inline-flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-primaryColor" />
               <span>{t.calc?.loan ?? 'Loan principal'}:</span>

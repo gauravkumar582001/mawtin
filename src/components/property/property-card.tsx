@@ -203,7 +203,7 @@ export function PropertyCard({
               </button>
 
               {/* Image pagination dots */}
-              <div className="pointer-events-none absolute bottom-3 inset-x-0 z-10 flex items-center justify-center gap-1.5">
+              <div className="pointer-events-none absolute bottom-9 sm:bottom-3.5 inset-x-0 z-10 flex items-center justify-center gap-1.5">
                 {images.slice(0, 5).map((_, idx) => (
                   <span
                     key={idx}
@@ -222,10 +222,10 @@ export function PropertyCard({
             <Link
               href={`/agencies/${card.agency.slug}`}
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-3 start-3 z-10 flex items-center gap-1.5 rounded-full bg-surface/90 backdrop-blur-md py-1 pe-3 ps-1 text-[11px] font-semibold text-text border border-border/80 shadow-xs hover:border-primaryColor hover:text-primaryColor transition-all"
+              className="absolute bottom-3 start-3 z-10 flex items-center gap-1.5 rounded-full bg-surface/90 backdrop-blur-md py-1 pe-2.5 sm:pe-3 ps-1 text-[11px] font-semibold text-text border border-border/80 shadow-xs hover:border-primaryColor hover:text-primaryColor transition-all"
             >
-              <Avatar name={card.agency.name} color={card.agency.brandColor} size={22} />
-              <span className="truncate max-w-[130px]">{pick(lang, card.agency.name, card.agency.nameAr)}</span>
+              <Avatar name={card.agency.name} color={card.agency.brandColor} size={20} />
+              <span className="truncate max-w-[70px] xs:max-w-[100px] sm:max-w-[130px]">{pick(lang, card.agency.name, card.agency.nameAr)}</span>
               <ShieldCheck className="size-3 text-primaryColor shrink-0" />
             </Link>
           )}
@@ -233,23 +233,26 @@ export function PropertyCard({
           {/* Photo Count Badge & View Detail Button on bottom-end */}
           <div className="absolute bottom-3 end-3 z-20 flex items-center gap-1.5">
             {images.length > 1 && (
-              <div className="pointer-events-none flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2 py-0.5 text-[10.5px] font-semibold text-white/95 shadow-2xs">
+              <div className="pointer-events-none flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2 py-0.5 text-[10px] sm:text-[10.5px] font-semibold text-white/95 shadow-2xs">
                 <Images className="size-3" />
                 <span>{images.length}</span>
               </div>
             )}
             <Link
               href={href}
-              className="flex items-center gap-1 rounded-full bg-surface/95 backdrop-blur-md px-2.5 py-1 text-[11px] font-bold text-text border border-border/80 shadow-xs hover:bg-primaryColor hover:text-white hover:border-primaryColor transition-all group/vmore"
+              className="flex items-center gap-1 rounded-full bg-surface/95 backdrop-blur-md px-2 xs:px-2.5 py-1 text-[10.5px] xs:text-[11px] font-bold text-text border border-border/80 shadow-xs hover:bg-primaryColor hover:text-white hover:border-primaryColor transition-all group/vmore"
             >
-              <span>{t.card?.viewDetail ?? 'View Detail'}</span>
+              <span>
+                <span className="hidden xs:inline">{t.card?.viewDetail ?? 'View Detail'}</span>
+                <span className="xs:hidden">{lang === 'ar' ? 'عرض' : 'View'}</span>
+              </span>
               <ArrowUpRight className="size-3 transition-transform group-hover/vmore:translate-x-0.5 group-hover/vmore:-translate-y-0.5" />
             </Link>
           </div>
         </div>
 
         {/* Card Body Details */}
-        <div className="p-5 flex flex-col justify-between [transform:translateZ(20px)]">
+        <div className="p-4 sm:p-5 flex flex-col justify-between [transform:translateZ(20px)]">
           <div>
             {/* Price & Compare Row */}
             <div className="flex items-center justify-between gap-2">

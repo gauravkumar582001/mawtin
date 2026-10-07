@@ -185,10 +185,10 @@ export function FilterDrawer({
             aria-label={t.results?.filters ?? 'Filters'}
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <div className="flex items-center justify-between border-b border-border px-4 sm:px-6 py-3.5 sm:py-4">
               <div className="flex items-center gap-2.5">
                 <SlidersHorizontal className="size-4 text-primaryColor" />
-                <h3 className="text-lg font-bold text-text">
+                <h3 className="text-base sm:text-lg font-bold text-text">
                   {t.results?.filters ?? 'Filters'}
                 </h3>
                 {activeFiltersCount > 0 && (
@@ -208,7 +208,7 @@ export function FilterDrawer({
             </div>
 
             {/* Drawer Scrollable Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5 space-y-5 sm:space-y-6">
               {/* Purpose Toggle */}
               <div>
                 <h4 className={sectionHeading}>{t.results?.purpose ?? 'Purpose'}</h4>

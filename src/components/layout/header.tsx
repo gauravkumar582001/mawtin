@@ -108,7 +108,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
-      <div className="mx-auto flex h-[60px] w-full max-w-[1440px] items-center justify-between gap-4 px-5 md:px-8 lg:h-20 lg:px-16">
+      <div className="mx-auto flex h-[60px] w-full max-w-[1440px] items-center justify-between gap-2 sm:gap-4 px-3.5 sm:px-5 md:px-8 lg:h-20 lg:px-16">
         {/* Left: Brand Logo & Desktop Navigation */}
         <div className="flex items-center gap-8 xl:gap-12">
           <Link href="/" aria-label="Velra, home" className="inline-flex items-center gap-2.5">
@@ -325,7 +325,7 @@ export function Header() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex h-11 items-center rounded-full px-4 text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)]"
+              className="inline-flex h-10 sm:h-11 items-center rounded-full px-2.5 sm:px-4 text-xs sm:text-sm font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)]"
             >
               {t.nav.signIn}
             </Link>
@@ -342,7 +342,7 @@ export function Header() {
           {/* Mobile Menu Toggle */}
           <button
             type="button"
-            className="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-base font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)] lg:hidden"
+            className="inline-flex h-10 sm:h-11 items-center gap-1 rounded-full px-2.5 sm:px-3 text-sm sm:text-base font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)] lg:hidden"
             aria-label={t.nav.menu}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
@@ -436,10 +436,20 @@ export function Header() {
                 </div>
               </div>
 
+              {!user && (
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 flex h-11 items-center justify-center rounded-full bg-[var(--primaryColor)] font-semibold text-white transition-colors hover:bg-[var(--primaryColorHover)] text-sm shadow-xs"
+                >
+                  {t.nav.signIn}
+                </Link>
+              )}
+
               <Link
                 href="/#faq"
                 onClick={() => setOpen(false)}
-                className="mt-2 flex h-12 items-center justify-center rounded-full border-[1.5px] border-[var(--text)] font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)]"
+                className="mt-1 flex h-11 sm:h-12 items-center justify-center rounded-full border-[1.5px] border-[var(--text)] font-semibold text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)] text-sm sm:text-base"
               >
                 {t.nav.getInTouch}
               </Link>

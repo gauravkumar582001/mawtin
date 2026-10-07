@@ -443,13 +443,65 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
           className="flex h-12 w-full items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 text-start"
         >
           <div className="flex items-center gap-2.5 truncate">
-            <MapPin className="h-4 w-4 text-[var(--primaryColor)]" />
+            <MapPin className="h-4 w-4 text-[var(--primaryColor)] shrink-0" />
             <span className="truncate text-sm font-semibold text-[var(--text)]">{locationLabel}</span>
           </div>
-          <ChevronDown className="h-4 w-4 shrink-0 text-[var(--text-muted)]" />
+          <ChevronDown className={cn("h-4 w-4 shrink-0 text-[var(--text-muted)] transition-transform", activeMenu === 'location' && "rotate-180")} />
         </button>
 
-        <div className="flex items-center gap-2">
+        {/* Mobile Inline Location Dropdown */}
+        <AnimatePresence>
+          {activeMenu === 'location' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 shadow-xs"
+            >
+              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-subtle)]">
+                {t.search.location}
+              </div>
+              <div className="max-h-[220px] overflow-y-auto space-y-0.5 pe-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setArea('');
+                    setActiveMenu(null);
+                  }}
+                  className={cn(
+                    'flex w-full items-center justify-between rounded-xl px-3 py-2 text-start text-sm transition-colors hover:bg-[var(--surface-hover)]',
+                    !area && 'bg-[var(--primary-tint)] font-semibold text-[var(--primaryColor)]',
+                  )}
+                >
+                  <span>{t.search.allAreas}</span>
+                  {!area && <Check className="h-4 w-4 text-[var(--primaryColor)]" />}
+                </button>
+                {areas.map((a) => {
+                  const on = area === a.slug;
+                  return (
+                    <button
+                      key={a.slug}
+                      type="button"
+                      onClick={() => {
+                        setArea(a.slug);
+                        setActiveMenu(null);
+                      }}
+                      className={cn(
+                        'flex w-full items-center justify-between rounded-xl px-3 py-2 text-start text-sm transition-colors hover:bg-[var(--surface-hover)]',
+                        on && 'bg-[var(--primary-tint)] font-semibold text-[var(--primaryColor)]',
+                      )}
+                    >
+                      <span>{pick(lang, a.name, a.nameAr)}</span>
+                      {on && <Check className="h-4 w-4 text-[var(--primaryColor)]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Segmented Buy / Rent switch */}
           <PurposeToggle
             value={purpose}
@@ -457,24 +509,25 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
               setPurpose(p);
               setMax('');
             }}
-            className="h-11 flex-1"
+            className="h-11 flex-1 min-w-0"
           />
 
           {/* More Filters trigger */}
           <button
             type="button"
             onClick={() => setActiveMenu('more')}
-            className="inline-flex h-11 items-center gap-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-3 text-sm font-medium text-[var(--text)]"
+            aria-label={t.results.filters}
+            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-2.5 xs:px-3 text-xs xs:text-sm font-medium text-[var(--text)] transition-colors hover:bg-[var(--surface-hover)]"
           >
-            <SlidersHorizontal className="h-4 w-4" />
-            <span>{t.results.filters}</span>
+            <SlidersHorizontal className="h-3.5 w-3.5 xs:h-4 xs:w-4 text-[var(--primaryColor)]" />
+            <span className="hidden xs:inline">{t.results.filters}</span>
           </button>
 
           {/* Search Button */}
           <button
             type="submit"
             aria-label={t.search.submit}
-            className="inline-flex size-11 items-center justify-center rounded-full bg-[var(--primaryColor)] text-[var(--on-primary)] shadow-sm"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--primaryColor)] text-[var(--on-primary)] shadow-sm hover:bg-[var(--primaryColorHover)] active:scale-95 transition-all"
           >
             <Search className="h-4 w-4" />
           </button>
@@ -484,7 +537,7 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
       {/* ───────── More Filters Modal Dialog ───────── */}
       <AnimatePresence>
         {activeMenu === 'more' && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -497,10 +550,10 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 16 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-lg overflow-hidden rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-raised"
+              className="relative w-full max-w-lg overflow-hidden rounded-[22px] sm:rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 shadow-raised max-h-[85vh] flex flex-col"
             >
-              <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                <h3 className="text-xl font-bold text-[var(--text)]">{t.search.moreFilters}</h3>
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3.5 sm:pb-4 shrink-0">
+                <h3 className="text-lg sm:text-xl font-bold text-[var(--text)]">{t.search.moreFilters}</h3>
                 <button
                   type="button"
                   onClick={() => setActiveMenu(null)}
@@ -510,7 +563,7 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
                 </button>
               </div>
 
-              <div className="grid gap-5 py-5 max-h-[60vh] overflow-y-auto">
+              <div className="grid gap-5 py-4 overflow-y-auto flex-1 pe-1">
                 {/* Purpose */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
@@ -534,7 +587,7 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
                           type="button"
                           onClick={() => setType(tp.key)}
                           className={cn(
-                            'rounded-full px-4 py-2 text-sm font-semibold transition-colors border',
+                            'rounded-full px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-colors border',
                             on
                               ? 'border-[var(--primaryColor)] bg-[var(--primaryColor)] text-[var(--on-primary)]'
                               : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:bg-[var(--surface-hover)]',
@@ -552,7 +605,7 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                     {t.search.beds}
                   </label>
-                  <div className="grid grid-cols-6 gap-1.5">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                     {BEDS_OPTIONS.map((b) => {
                       const on = beds === b.val;
                       return (
@@ -561,7 +614,7 @@ export function SearchBar({ areas, className }: { areas: Area[]; className?: str
                           type="button"
                           onClick={() => setBeds(b.val)}
                           className={cn(
-                            'h-10 rounded-xl text-sm font-semibold transition-colors border',
+                            'h-10 rounded-xl text-xs sm:text-sm font-semibold transition-colors border',
                             on
                               ? 'border-[var(--primaryColor)] bg-[var(--primaryColor)] text-[var(--on-primary)]'
                               : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:bg-[var(--surface-hover)]',

@@ -156,14 +156,14 @@ export function AgencyList({ agencies }: { agencies: Agency[] }) {
           </div>
 
           {/* Area Chips & Sort Dropdown */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {/* Area Filter Buttons */}
-            <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full no-scrollbar">
               <button
                 type="button"
                 onClick={() => setSelectedArea('all')}
                 className={cn(
-                  'rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all shadow-2xs',
+                  'rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all shadow-2xs shrink-0',
                   selectedArea === 'all'
                     ? 'bg-primaryColor text-white'
                     : 'bg-surface border border-border text-text hover:border-primaryColor'
@@ -177,7 +177,7 @@ export function AgencyList({ agencies }: { agencies: Agency[] }) {
                   type="button"
                   onClick={() => setSelectedArea(a.slug)}
                   className={cn(
-                    'rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all shadow-2xs',
+                    'rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all shadow-2xs shrink-0',
                     selectedArea === a.slug
                       ? 'bg-primaryColor text-white'
                       : 'bg-surface border border-border text-text hover:border-primaryColor'
@@ -189,7 +189,7 @@ export function AgencyList({ agencies }: { agencies: Agency[] }) {
             </div>
 
             {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 border-s border-border ps-3 ms-1">
+            <div className="flex items-center gap-2 sm:border-s sm:border-border sm:ps-3 shrink-0 self-start sm:self-auto">
               <SlidersHorizontal className="size-3.5 text-text-muted shrink-0" />
               <select
                 value={sortBy}
@@ -447,7 +447,7 @@ export function AgencyProfile({
 
       {/* ───────── High-Impact Hero Banner ───────── */}
       <section className="wrap">
-        <div className="relative isolate h-[320px] sm:h-[400px] overflow-hidden rounded-[28px] border border-border/80 shadow-card">
+        <div className="relative isolate min-h-[380px] sm:min-h-0 sm:h-[400px] overflow-hidden rounded-[24px] sm:rounded-[28px] border border-border/80 shadow-card">
           <motion.div
             initial={{ scale: 1.08 }}
             animate={{ scale: 1 }}
@@ -470,17 +470,17 @@ export function AgencyProfile({
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_left,rgba(35,107,121,0.4),transparent_70%)]" />
 
           {/* Banner Content Layer */}
-          <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 text-white">
+          <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-8 md:p-10 text-white">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.6 }}
-              className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+              className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-end md:justify-between"
             >
               {/* Agency Brand Identity */}
-              <div className="flex items-center gap-4 sm:gap-6">
+              <div className="flex flex-col xs:flex-row xs:items-center gap-3.5 sm:gap-6">
                 <span
-                  className="grid size-[80px] sm:size-[96px] place-items-center rounded-[24px] font-display text-3xl sm:text-4xl font-black shadow-2xl border-4 border-white/20 shrink-0"
+                  className="grid size-[64px] sm:size-[80px] md:size-[96px] place-items-center rounded-[20px] sm:rounded-[24px] font-display text-2xl sm:text-3xl md:text-4xl font-black shadow-2xl border-4 border-white/20 shrink-0"
                   style={{ background: a.brandColor ?? 'var(--primaryColor)' }}
                 >
                   {mark(a)}
@@ -495,14 +495,14 @@ export function AgencyProfile({
                       {a.licenseNo}
                     </span>
                   </div>
-                  <h1 className="font-display text-[clamp(28px,4vw,50px)] font-extrabold text-white tracking-[-0.03em] leading-tight">
+                  <h1 className="font-display text-[clamp(26px,4vw,50px)] font-extrabold text-white tracking-[-0.03em] leading-tight">
                     {agencyName}
                   </h1>
                 </div>
               </div>
 
               {/* Quick Contact Action Pills */}
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
                 {a.phone && (
                   <a
                     href={`https://wa.me/${a.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
@@ -510,7 +510,7 @@ export function AgencyProfile({
                     )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-500 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all active:scale-95"
+                    className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-500 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-md transition-all active:scale-95"
                   >
                     <MessageSquare className="size-4" />
                     <span>{t.agencies.whatsapp}</span>
@@ -520,7 +520,7 @@ export function AgencyProfile({
                 {a.phone && (
                   <a
                     href={`tel:${a.phone}`}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/90 hover:bg-white text-text px-4 py-2.5 text-xs font-bold shadow-md transition-all active:scale-95"
+                    className="inline-flex items-center gap-2 rounded-full bg-white/90 hover:bg-white text-text px-3.5 sm:px-4 py-2 text-xs font-bold shadow-md transition-all active:scale-95"
                   >
                     <Phone className="size-3.5 text-primaryColor" />
                     <span>{t.agencies.callOffice}</span>
@@ -532,7 +532,7 @@ export function AgencyProfile({
                     href={a.website}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white border border-white/20 px-3.5 py-2.5 text-xs font-semibold backdrop-blur-md transition-all"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white border border-white/20 px-3 sm:px-3.5 py-2 text-xs font-semibold backdrop-blur-md transition-all"
                   >
                     <Globe className="size-3.5" />
                     <span>{t.agencies.visitWebsite}</span>
@@ -545,12 +545,12 @@ export function AgencyProfile({
         </div>
 
         {/* ───────── Executive Metrics Strip ───────── */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="card rounded-[20px] border border-border bg-surface p-4 text-center shadow-xs">
+        <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-4">
+          <div className="card rounded-[20px] border border-border bg-surface p-3 sm:p-4 text-center shadow-xs">
             <span className="flex items-center justify-center size-8 rounded-full bg-primary-tint text-primaryColor mx-auto mb-2">
               <Home className="size-4" />
             </span>
-            <div className="font-display text-2xl font-bold text-primaryColor tabular leading-none">
+            <div className="font-display text-xl sm:text-2xl font-bold text-primaryColor tabular leading-none">
               {listings.length}
             </div>
             <div className="mt-1 text-xs font-semibold text-text-muted">
@@ -558,11 +558,11 @@ export function AgencyProfile({
             </div>
           </div>
 
-          <div className="card rounded-[20px] border border-border bg-surface p-4 text-center shadow-xs">
+          <div className="card rounded-[20px] border border-border bg-surface p-3 sm:p-4 text-center shadow-xs">
             <span className="flex items-center justify-center size-8 rounded-full bg-primary-tint text-primaryColor mx-auto mb-2">
               <Users className="size-4" />
             </span>
-            <div className="font-display text-2xl font-bold text-text tabular leading-none">
+            <div className="font-display text-xl sm:text-2xl font-bold text-text tabular leading-none">
               {a.memberCount ?? a.team.length}
             </div>
             <div className="mt-1 text-xs font-semibold text-text-muted">
@@ -570,11 +570,11 @@ export function AgencyProfile({
             </div>
           </div>
 
-          <div className="card rounded-[20px] border border-border bg-surface p-4 text-center shadow-xs">
+          <div className="card rounded-[20px] border border-border bg-surface p-3 sm:p-4 text-center shadow-xs">
             <span className="flex items-center justify-center size-8 rounded-full bg-primary-tint text-primaryColor mx-auto mb-2">
               <MapPin className="size-4" />
             </span>
-            <div className="font-display text-lg sm:text-xl font-bold text-text truncate leading-none">
+            <div className="font-display text-base sm:text-xl font-bold text-text truncate leading-none">
               {primaryArea}
             </div>
             <div className="mt-1 text-xs font-semibold text-text-muted">
@@ -582,11 +582,11 @@ export function AgencyProfile({
             </div>
           </div>
 
-          <div className="card rounded-[20px] border border-border bg-surface p-4 text-center shadow-xs">
+          <div className="card rounded-[20px] border border-border bg-surface p-3 sm:p-4 text-center shadow-xs">
             <span className="flex items-center justify-center size-8 rounded-full bg-primary-tint text-primaryColor mx-auto mb-2">
               <Calendar className="size-4" />
             </span>
-            <div className="font-display text-2xl font-bold text-text tabular leading-none">
+            <div className="font-display text-xl sm:text-2xl font-bold text-text tabular leading-none">
               {a.foundedYear ?? 2011}
             </div>
             <div className="mt-1 text-xs font-semibold text-text-muted">
@@ -612,12 +612,12 @@ export function AgencyProfile({
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex flex-wrap items-center gap-1 rounded-full bg-sand-2 p-1 border border-border/60">
+                <div className="flex items-center gap-1 rounded-full bg-sand-2 p-1 border border-border/60 overflow-x-auto max-w-full no-scrollbar">
                   <button
                     type="button"
                     onClick={() => setFilterPurpose('ALL')}
                     className={cn(
-                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all',
+                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all shrink-0',
                       filterPurpose === 'ALL'
                         ? 'bg-primaryColor text-white shadow-2xs'
                         : 'text-text-muted hover:text-text'
@@ -629,7 +629,7 @@ export function AgencyProfile({
                     type="button"
                     onClick={() => setFilterPurpose('SALE')}
                     className={cn(
-                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all',
+                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all shrink-0',
                       filterPurpose === 'SALE'
                         ? 'bg-primaryColor text-white shadow-2xs'
                         : 'text-text-muted hover:text-text'
@@ -641,7 +641,7 @@ export function AgencyProfile({
                     type="button"
                     onClick={() => setFilterPurpose('RENT')}
                     className={cn(
-                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all',
+                      'rounded-full px-3.5 py-1 text-xs font-bold transition-all shrink-0',
                       filterPurpose === 'RENT'
                         ? 'bg-primaryColor text-white shadow-2xs'
                         : 'text-text-muted hover:text-text'

@@ -13,9 +13,9 @@ const AREAS: Area[] = [
 
 const AREA_IMG: Record<string, string> = {
   seeb: '/homes/townhouse.webp', 'al-mouj': '/homes/view.webp', msq: '/homes/villa-facade.webp',
-  qurum: '/homes/villa.webp', bausher: '/homes/garden.webp', muttrah: '/homes/terrace.webp',
+  qurum: '/homes/villa-2.webp', bausher: '/homes/garden.webp', muttrah: '/homes/terrace.webp',
 };
-export const areaImage = (slug: string) => AREA_IMG[slug] ?? '/homes/villa.webp';
+export const areaImage = (slug: string) => AREA_IMG[slug] ?? '/homes/view.webp';
 
 type Team = { id: string; fullName: string; title: string; titleAr: string; phone: string; email: string };
 const TEAM: Record<string, Team[]> = {
@@ -41,7 +41,7 @@ const AGENCIES: Agency[] = [
 type Row = [slug: string, title: string, titleAr: string, area: string, type: PropertyType, purpose: Purpose, price: number, beds: number, baths: number, size: number, imgs: string[], agency: string, agent: number, featured: boolean, amen: string[], desc: string, descAr: string, year?: number, floors?: number, coords?: [lat: number, lng: number]];
 
 const ROWS: Row[] = [
-  ['qurum-courtyard-villa', 'The Qurum Courtyard Villa', 'فيلا القرم ذات الفناء', 'qurum', 'VILLA', 'SALE', 185000, 4, 4, 320, ['villa', 'villa-facade', 'garden', 'living'], 'saraya-estates', 0, true, ['pool', 'garden', 'parking', 'ac', 'maid', 'wifi'], 'A limestone and teak villa set around a shaded courtyard, five minutes from Qurum beach. Double-height entrance, open kitchen, and a roof terrace facing the Hajar mountains.', 'فيلا من الحجر الجيري وخشب الساج حول فناء مظلل، على بعد خمس دقائق من شاطئ القرم. مدخل مزدوج الارتفاع ومطبخ مفتوح وسطح يطل على جبال الحجر.', 2023, 2, [23.6182, 58.4795]],
+  ['qurum-courtyard-villa', 'The Qurum Courtyard Villa', 'فيلا القرم ذات الفناء', 'qurum', 'VILLA', 'SALE', 185000, 4, 4, 320, ['villa-facade', 'villa', 'garden', 'living'], 'saraya-estates', 0, true, ['pool', 'garden', 'parking', 'ac', 'maid', 'wifi'], 'A limestone and teak villa set around a shaded courtyard, five minutes from Qurum beach. Double-height entrance, open kitchen, and a roof terrace facing the Hajar mountains.', 'فيلا من الحجر الجيري وخشب الساج حول فناء مظلل، على بعد خمس دقائق من شاطئ القرم. مدخل مزدوج الارتفاع ومطبخ مفتوح وسطح يطل على جبال الحجر.', 2023, 2, [23.6182, 58.4795]],
   ['al-mouj-marina-residence', 'Al Mouj Marina Residence', 'شقة مرسى الموج', 'al-mouj', 'APARTMENT', 'RENT', 950, 2, 2, 128, ['living', 'view', 'living-2'], 'al-khaleej-homes', 0, false, ['pool', 'gym', 'sea', 'ac', 'parking', 'wifi'], 'Bright two-bedroom apartment with floor-to-ceiling glazing and a wide balcony over the marina.', 'شقة مشرقة بغرفتي نوم وواجهات زجاجية وشرفة واسعة تطل على المرسى.', 2021, 1, [23.6231, 58.2715]],
   ['seeb-garden-house', 'Seeb Garden House', 'بيت حديقة السيب', 'seeb', 'TOWNHOUSE', 'SALE', 99000, 3, 3, 210, ['townhouse', 'terrace', 'townhouse-2'], 'liwan-realty', 0, false, ['garden', 'parking', 'ac', 'maid'], 'A calm corner townhouse with a planted front garden and a covered majlis.', 'منزل هادئ على زاوية مع حديقة أمامية ومجلس مغطى.', 2022, 2, [23.6742, 58.1852]],
   ['qurum-terrace-apartment', 'Qurum Terrace Apartment', 'شقة شرفة القرم', 'qurum', 'APARTMENT', 'RENT', 720, 2, 2, 116, ['living-2', 'view'], 'saraya-estates', 1, false, ['gym', 'ac', 'parking', 'wifi'], 'Two bedrooms, a generous terrace and a short walk to Qurum Natural Park.', 'غرفتا نوم وشرفة واسعة وعلى مسافة قصيرة من حديقة القرم الطبيعية.', 2020, 1, [23.6095, 58.4718]],

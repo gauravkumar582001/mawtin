@@ -16,6 +16,8 @@ import {
   Layers,
   MapPin,
   Maximize2,
+  MessageSquare,
+  Phone,
   Plane,
   Share2,
   Shield,
@@ -117,7 +119,7 @@ export function DetailView({
   ];
 
   return (
-    <div className="pb-16 pt-4">
+    <div className="pb-28 lg:pb-16 pt-4">
       {/* ───────── Top Breadcrumb & Actions Bar ───────── */}
       <section className="wrap pb-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/80 pb-3.5">
@@ -244,20 +246,20 @@ export function DetailView({
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_390px]">
           <div className="min-w-0 space-y-9">
             {/* Fact Sheet Grid */}
-            <Reveal className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <Reveal className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
               {facts.map(([Icon, val, label]) => (
                 <div
                   key={label}
-                  className="flex items-center gap-3.5 rounded-[20px] border border-border bg-surface p-4 shadow-xs"
+                  className="flex items-center gap-2.5 sm:gap-3.5 rounded-[18px] sm:rounded-[20px] border border-border bg-surface p-3 sm:p-4 shadow-xs"
                 >
-                  <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-tint text-primaryColor">
-                    <Icon className="size-5 stroke-[2.2]" />
+                  <div className="grid size-9 sm:size-11 shrink-0 place-items-center rounded-xl bg-primary-tint text-primaryColor">
+                    <Icon className="size-4 sm:size-5 stroke-[2.2]" />
                   </div>
                   <div className="min-w-0">
-                    <b className="tabular block font-display text-lg font-bold text-text leading-tight truncate">
+                    <b className="tabular block font-display text-base sm:text-lg font-bold text-text leading-tight truncate">
                       {val}
                     </b>
-                    <span className="text-[11.5px] text-text-muted font-medium truncate block mt-0.5">
+                    <span className="text-[10.5px] sm:text-[11.5px] text-text-muted font-medium truncate block mt-0.5">
                       {label}
                     </span>
                   </div>
@@ -418,7 +420,7 @@ export function DetailView({
           </div>
 
           {/* Sticky Sidebar Action Panel */}
-          <aside className="lg:sticky lg:top-24">
+          <aside id="action-panel" className="lg:sticky lg:top-24 scroll-mt-28">
             <ActionPanel p={p} />
           </aside>
         </div>
@@ -448,6 +450,53 @@ export function DetailView({
           </div>
         )}
       </section>
+
+      {/* ───────── Mobile Sticky Bottom Action Bar (lg:hidden) ───────── */}
+      <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden border-t border-border bg-surface/95 backdrop-blur-md px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+        <div className="flex items-center justify-between gap-3">
+          {/* Price display */}
+          <div className="min-w-0">
+            <span className="text-[10.5px] font-bold uppercase tracking-wider text-text-muted block leading-none">
+              {p.purpose === 'RENT' ? (lang === 'ar' ? 'الإيجار' : 'Rent') : (lang === 'ar' ? 'السعر' : 'Price')}
+            </span>
+            <div className="font-display text-lg xs:text-xl font-black text-primaryColor tabular truncate mt-0.5">
+              {omr(p.price)}
+              {p.purpose === 'RENT' && (
+                <span className="text-[11px] font-sans font-normal text-text-muted ms-1">
+                  {t.card?.perMonth ?? '/ mo'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Actions (WhatsApp + Inquire / Book Viewing) */}
+          <div className="flex items-center gap-2 shrink-0">
+            {p.agency?.phone && (
+              <a
+                href={`https://wa.me/${p.agency.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                  `Hello, I am interested in ${title} (Ref: ${p.slug}) listed on Velra.`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="WhatsApp agent"
+                className="grid size-11 place-items-center rounded-full bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm active:scale-95 transition-all"
+              >
+                <Phone className="size-4" />
+              </a>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById('action-panel')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center justify-center h-11 px-4 sm:px-5 rounded-full bg-primaryColor text-white text-xs font-bold hover:bg-primaryColorHover shadow-sm active:scale-95 transition-all"
+            >
+              <span>{p.purpose === 'RENT' ? (lang === 'ar' ? 'طلب معاينة' : 'Book Viewing') : (lang === 'ar' ? 'تقديم عرض' : 'Make Offer')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -180,7 +180,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
             </button>
 
             {/* Mobile Pagination Dots */}
-            <div className="absolute bottom-4 start-4 z-10 flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-full pointer-events-none">
+            <div className="absolute bottom-3 start-3 sm:bottom-4 sm:start-4 z-10 flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-full pointer-events-none">
               {list.slice(0, 5).map((_, idx) => (
                 <span
                   key={idx}
@@ -203,13 +203,13 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
         <button
           type="button"
           onClick={() => setOpen(previewIdx)}
-          className="absolute bottom-4 end-4 z-10 flex items-center gap-2 rounded-full border border-border/80 bg-surface/90 backdrop-blur-md px-4 py-2 text-xs font-bold text-text shadow-md hover:bg-surface hover:border-primaryColor transition-all duration-200"
+          className="absolute bottom-3 end-3 sm:bottom-4 sm:end-4 z-10 flex items-center gap-1.5 sm:gap-2 rounded-full border border-border/80 bg-surface/90 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-text shadow-md hover:bg-surface hover:border-primaryColor transition-all duration-200"
         >
-          <Images className="size-4 text-primaryColor" />
+          <Images className="size-3.5 sm:size-4 text-primaryColor" />
           <span>
             {lang === 'ar'
-              ? `عرض كل الصور (${list.length})`
-              : `View all ${list.length} photos`}
+              ? `كل الصور (${list.length})`
+              : `All photos (${list.length})`}
           </span>
         </button>
       </div>
@@ -298,17 +298,17 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
                     type="button"
                     onClick={() => go(-1)}
                     aria-label={t.detail?.prev ?? 'Previous photo'}
-                    className="absolute start-2 sm:start-6 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 transition-all"
+                    className="absolute start-2 sm:start-6 top-1/2 -translate-y-1/2 grid size-10 sm:size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 active:scale-95 transition-all"
                   >
-                    <ChevronLeft className="size-6 rtl-flip" />
+                    <ChevronLeft className="size-5 sm:size-6 rtl-flip" />
                   </button>
                   <button
                     type="button"
                     onClick={() => go(1)}
                     aria-label={t.detail?.next ?? 'Next photo'}
-                    className="absolute end-2 sm:end-6 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 transition-all"
+                    className="absolute end-2 sm:end-6 top-1/2 -translate-y-1/2 grid size-10 sm:size-12 place-items-center rounded-full bg-black/50 text-white/90 backdrop-blur-md border border-white/15 hover:bg-black/80 hover:scale-105 active:scale-95 transition-all"
                   >
-                    <ChevronRight className="size-6 rtl-flip" />
+                    <ChevronRight className="size-5 sm:size-6 rtl-flip" />
                   </button>
                 </>
               )}
@@ -316,7 +316,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
 
             {/* Bottom Interactive Thumbnail Strip */}
             {list.length > 1 && (
-              <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 z-10">
+              <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto py-2 z-10 no-scrollbar max-w-full px-2">
                 {list.map((thumb, idx) => (
                   <button
                     key={idx}
@@ -326,7 +326,7 @@ export function Gallery({ images, title }: { images: ImageRef[]; title: string }
                       setOpen(idx);
                     }}
                     className={cn(
-                      'relative size-14 sm:size-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200',
+                      'relative size-12 sm:size-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200',
                       idx === open
                         ? 'border-primaryColor scale-105 shadow-md'
                         : 'border-transparent opacity-60 hover:opacity-100'
